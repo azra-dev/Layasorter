@@ -1,0 +1,6 @@
+/.venv
+/meteos
+/meteos_sorted
+/meteos_sorted.zip
+/test
+/__pycache__
