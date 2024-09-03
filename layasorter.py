@@ -16,6 +16,33 @@ def main(page: ft.Page):
     page.window.height = 320
     page.window.icon = "favicon.png"
 
+    def disable_components():
+        laya_source_textfield.disabled = True
+        laya_destination_textfield.disabled = True
+        laya_source_folder.disabled = True
+        laya_destination_folder.disabled = True
+        laya_sort_button.disabled = True
+
+        laya_source_textfield.update()
+        laya_destination_textfield.update()
+        laya_source_folder.update()
+        laya_destination_folder.update()
+        laya_sort_button.update()
+    
+    def enable_components():
+        laya_source_textfield.disabled = False
+        laya_destination_textfield.disabled = False
+        laya_source_folder.disabled = False
+        laya_destination_folder.disabled = False
+        laya_sort_button.disabled = False
+
+        laya_source_textfield.update()
+        laya_destination_textfield.update()
+        laya_source_folder.update()
+        laya_destination_folder.update()
+        laya_sort_button.update()
+
+
     def pick_source_path(e: ft.FilePickerResultEvent):
         laya_source_textfield.value = e.path
         laya_source_textfield.update()
@@ -32,12 +59,16 @@ def main(page: ft.Page):
         
         if not os.path.exists(laya_destination_textfield.value):
             efl.append("Destination directory")
-        
+
         if len(efl) == 0:
+            laya_error.update()
+            disable_components()
             sorter = Sorter(source_folder=laya_source_textfield.value, target_folder=laya_destination_textfield.value)
             sorter.read_data()
             sorter.get_spritetype()
+            enable_components()
         else:
+            enable_components()
             for ex in efl:
                 laya_error.controls.append(ft.Text(value=f"{ex} is not a valid directory!", color="#e6b9d5", size=8))
         
@@ -77,6 +108,14 @@ def main(page: ft.Page):
                                            width=20, height=20, image_fit=True, bgcolor=ft.colors.TRANSPARENT, ink=True, margin=ft.margin.only(right=4), border_radius=100,
                                            on_click=lambda e: pick_destination_dialog.get_directory_path(dialog_title="Select Destination Directory"))
     
+    laya_sort_button = ft.Container(
+        content=ft.Text("Sort", color=electro_dark, font_family="centurygothic.ttf", weight=ft.FontWeight.W_600, size=16), 
+        padding=ft.padding.symmetric(horizontal=32, vertical=2), border_radius=16, border=ft.border.all(2, electro_yellow), ink=True,
+        gradient=ft.LinearGradient(begin=ft.alignment.top_left, end=ft.alignment.bottom_right, colors=[
+            "#e9e596", "#e6b9d5"
+        ]),
+        on_click=run_sorter
+    )
     laya_error = ft.Column([], spacing=0)
     
     page.overlay.append(pick_source_dialog)
@@ -115,14 +154,7 @@ def main(page: ft.Page):
                                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
                             ),
                             ft.Row([
-                                ft.Container(
-                                    content=ft.Text("Sort", color=electro_dark, font_family="centurygothic.ttf", weight=ft.FontWeight.W_600, size=16), 
-                                    padding=ft.padding.symmetric(horizontal=32, vertical=2), border_radius=16, border=ft.border.all(2, electro_yellow), ink=True,
-                                    gradient=ft.LinearGradient(begin=ft.alignment.top_left, end=ft.alignment.bottom_right, colors=[
-                                        "#e9e596", "#e6b9d5"
-                                    ]),
-                                    on_click=run_sorter
-                                )
+                                laya_sort_button
                             ],alignment=ft.MainAxisAlignment.END
                             ),
                             laya_error

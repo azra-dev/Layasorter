@@ -23,11 +23,11 @@ class Sorter:
         matching_json_file = None
         matching_filename = None
         for file in temp_all_paths:
-            filename, ext = str.split(file, '.')
-            if ext in ['json']:
+            filename, ext = os.path.splitext(file)
+            if ext in ['.json']:
                 matching_json_file = file
                 matching_filename = filename
-            elif ext in ['png'] and filename == matching_filename:
+            elif ext in ['.png'] and filename == matching_filename:
                 self.json_list.append(matching_json_file)
                 self.img_list.append(file)
 
@@ -66,7 +66,7 @@ class Sorter:
                         item_path = os.path.join(self.source_folder, 'creations', item_filename)
                         shutil.copy(item_path, holder_path)
                 else:
-                    # shutil.copy(self.img_list[idx], sprite_path)
+                    shutil.copy(self.img_list[idx], sprite_path)
                     None
 
             except:
